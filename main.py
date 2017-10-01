@@ -1,5 +1,6 @@
 import os
 import logging
+from utils import get_env
 import parsedatetime as pdt
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
 
@@ -25,10 +26,7 @@ def parse_time(bot, update):
 
 def main():
     set_logging()
-    token_env = 'BOT_TOKEN'
-    if token_env not in os.environ:
-        raise Exception("Environment variable '{}' is not set".format(token_env))
-    bot_token = os.environ['BOT_TOKEN']
+    bot_token = get_env('BOT_TOKEN')
     updater = Updater(token=bot_token)
     dispatcher = updater.dispatcher 
 
