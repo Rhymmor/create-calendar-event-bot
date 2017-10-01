@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <script>
+            window.onload = init;
+
+            function getCode() {
+                const splitWithCode = location.pathname.split('/?code=');
+                if (splitWithCode.length > 1) {
+                    const code = splitWithCode[1].split('/')[0];
+                    if (Number.isInteger(code)) {
+                        return code;
+                    }
+                }
+            }
+            function init() {
+                const code = getCode();
+                const elem = document.getElementById('code');
+                if (code) {
+                    elem.textContent = `Your code is ${code}`;
+                } else {
+                    elem.textContent = 'There is no code for you';
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div>
+            <span id='code'></span>
+        </div>
+    </body>
+</html>
