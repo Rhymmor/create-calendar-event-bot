@@ -4,7 +4,7 @@
             window.onload = init;
 
             function getCode() {
-                const splitWithCode = location.pathname.split('/?code=');
+                const splitWithCode = location.search.split('code=');
                 if (splitWithCode.length > 1) {
                     const code = splitWithCode[1].split('/')[0];
                     if (Number.isInteger(code)) {
