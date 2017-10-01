@@ -1,8 +1,10 @@
 import os
 import logging
+from parser import parse_message
 from utils import get_env
 import parsedatetime as pdt
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
+from telegram.ext.dispatcher import run_async
 
 def set_logging():
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -11,16 +13,8 @@ def set_logging():
 def start(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="Hello, human!")
 
-def get_date(string):
-    cal = pdt.Calendar()
-    match = cal.nlp(string)
-    if match is not None and len(match) > 0:
-        return match[0][4]
-    else:
-        return None
-
 def parse_time(bot, update):
-    match = get_date(update.message.text)
+    match = parse_message(update.message.text)
     if match is not None:
         bot.send_message(chat_id=update.message.chat_id, text=match)
 
@@ -28,7 +22,7 @@ def main():
     set_logging()
     bot_token = get_env('BOT_TOKEN')
     updater = Updater(token=bot_token)
-    dispatcher = updater.dispatcher 
+    dispatcher = updater.dispatcher
 
     start_handler = CommandHandler('start', start)
     message_handler = MessageHandler(Filters.text, parse_time)
