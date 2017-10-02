@@ -2,3 +2,4 @@
 __pycache__/
 client_secret.json
 .DS_Store
+mongodb/
