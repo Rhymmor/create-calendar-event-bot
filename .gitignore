@@ -1,2 +1,4 @@
 .vscode/
 __pycache__/
+client_secret.json
+.DS_Store
