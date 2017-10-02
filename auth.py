@@ -1,28 +1,27 @@
-
-from __future__ import print_function
-import httplib2
-import os
-
-from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
-from oauth2client.file import Storage
+from oauth2client import OAuth2Credentials
 from utils import get_env
-
-import datetime
-
-try:
-    import argparse
-    flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-except ImportError:
-    flags = None
-
+from database import Database
+    
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Create Calendar event Telegram Bot'
 
+def create_credentials():
+    flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES, redirect_uri=get_env('REDIRECTION_URL'))
+    flow.user_agent = APPLICATION_NAME
+    authorize_url = flow.step1_get_authorize_url()
+    print(authorize_url)
+    code = input('Enter verification code: ').strip()
+    credentials = flow.step2_exchange(code)
+    return credentials
 
-def get_credentials():
+def check_auth(user_id):
+    db = Database()
+    creds = db.get_credentials(user_id)
+
+def get_credentials(user_id):
     """Gets valid user credentials from storage.
 
     If nothing has been stored, or if the stored credentials are invalid,
@@ -31,14 +30,11 @@ def get_credentials():
     Returns:
         Credentials, the obtained credential.
     """
-    flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES, redirect_uri=get_env('REDIRECTION_URL'))
-    flow.user_agent = APPLICATION_NAME
-    if flags:
-        authorize_url = flow.step1_get_authorize_url()
-        print(authorize_url)
-        code = input('Enter verification code: ').strip()
-        credential = flow.step2_exchange(code)
-        print(credential)
-    return credentials
-
-get_credentials()
+    db = Database()
+    creds = db.get_credentials(user_id)
+    if creds:
+        return OAuth2Credentials.from_json(creds['credentials'])
+    else:
+        new_creds = create_credentials()
+        db.insert_credentials(user_id, new_creds)
+        return new_creds

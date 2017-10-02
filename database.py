@@ -11,7 +11,7 @@ class Database:
         return Database.__instance
 
     def insert_credentials(self, user_id, credentials):
-        Database.__instance.user_id.insert({"user_id": user_id, "credentials": credentials})
+        Database.__instance.user_id.insert_one({"user_id": user_id, "credentials": credentials.to_json()})
 
     def get_credentials(self, user_id):
         return Database.__instance.user_id.find_one({'user_id': user_id})
