@@ -2,18 +2,19 @@
     <head>
         <script>
             window.onload = init;
-
-            function getCode() {
-                const splitWithCode = location.search.split('code=');
-                if (splitWithCode.length > 1) {
-                    const code = parseInt(splitWithCode[1]);
-                    if (Number.isInteger(code)) {
-                        return code;
+            function getQueryVariable(variable) {
+                const query = window.location.search.substring(1);
+                const vars = query.split('&');
+                for (const x of vars) {
+                    const pair = x.split('=');
+                    if (decodeURIComponent(pair[0]) == variable) {
+                        return decodeURIComponent(pair[1]);
                     }
                 }
+                console.error(`Query variable ${variable} not found`);
             }
             function init() {
-                const code = getCode();
+                const code = getQueryVariable('code');
                 const elem = document.getElementById('code');
                 if (code) {
                     elem.textContent = `Your code is ${code}`;
