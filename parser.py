@@ -48,3 +48,12 @@ def get_datetime(string):
         return match[0][4]
     else:
         return None
+
+def get_location(res):
+    entities_key = 'entities'
+    if entities_key in res:
+        locations = [entity for entity in res[entities_key] if entity['type'] is 'LOCATION']
+        if len(locations > 0):
+            return locations[0]
+
+            
