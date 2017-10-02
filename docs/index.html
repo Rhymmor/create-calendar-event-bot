@@ -6,7 +6,7 @@
             function getCode() {
                 const splitWithCode = location.search.split('code=');
                 if (splitWithCode.length > 1) {
-                    const code = Number(splitWithCode[1].split('/')[0]);
+                    const code = parseInt(splitWithCode[1]);
                     if (Number.isInteger(code)) {
                         return code;
                     }
