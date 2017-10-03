@@ -1,5 +1,5 @@
 import logging
-from bot import start_bot
+from bot import Bot
 
 def set_logging():
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -7,7 +7,8 @@ def set_logging():
 
 def main():
     set_logging()
-    start_bot()
+    bot = Bot()
+    bot.start()
 
 try:
     main()
