@@ -31,23 +31,27 @@ def fetch(message, token):
     return entities, syntax
 
 def parse_message(message):
-    datetime = get_datetime(message)
+    datetime = get_datetime_str(message)
     if datetime is None:
-        raise Exception('There is no datetime in the message: {}'.format(message))
+        return None, None
     title = message.replace(datetime, '')
 
     token = get_env('GOOGLE_API_TOKEN')
     entities, syntax = fetch(message, token)    #for now do nothing with results
 
-    return datetime
+    return datetime, title
 
-def get_datetime(string):
+def get_datetime_str(string):
     cal = pdt.Calendar()
     match = cal.nlp(string)
     if match is not None and len(match) > 0:
         return match[0][4]
     else:
         return None
+
+def get_datetime(string):
+    cal = pdt.Calendar()
+    return cal.parse(string)
 
 def get_location(res):
     entities_key = 'entities'
