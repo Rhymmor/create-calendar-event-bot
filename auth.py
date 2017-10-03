@@ -1,5 +1,4 @@
 from oauth2client import client
-from oauth2client.client import OAuth2Credentials
 from utils import get_env
 from database import Database
     
@@ -8,7 +7,7 @@ CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Create Calendar event Telegram Bot'
 
 def create_auth_url():
-    flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES, redirect_uri=get_env('REDIRECTION_URL'))
+    flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES, redirect_uri=get_env('REDIRECTION_URL'), prompt='consent')
     flow.user_agent = APPLICATION_NAME
     authorize_url = flow.step1_get_authorize_url()
     return authorize_url, flow
