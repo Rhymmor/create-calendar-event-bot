@@ -6,6 +6,7 @@ from utils import get_env, get_rfc3339_time
 from auth import check_auth, create_auth_url, create_credentials
 from oauth2client.client import OAuth2Credentials
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 class Bot:
     def __init__(self):
@@ -21,28 +22,36 @@ class Bot:
 
         self.flows = {}
 
+    def __create_url_button(self, url):
+        keyboard = [[InlineKeyboardButton(text='Authorization url', url=url)], []]
+        return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
     def __start_command(self):
         def start(bot, update):
             chat_id = update.message.chat_id
-            bot.send_message(chat_id=chat_id, text="Hello, human!")
-
             user_id = update.effective_user.id
+
             creds = check_auth(user_id)
             if self.__is_credentials_invalid(creds):
                 logging.info('User {}: no credentials. Creating auth url'.format(user_id))
                 url, flow = create_auth_url()
                 logging.info(url)
- 
+
                 self.flows[user_id] = flow
-                bot.send_message(chat_id=chat_id, text=url)
-        
+                bot.send_message(
+                    chat_id=chat_id,
+                    text="Please follow the link bellow to authorize with your Google account",
+                    reply_markup=self.__create_url_button(url)
+                )
+
         return start
 
     def __handle_code(self, bot, update):
         user_id = update.effective_user.id
         chat_id = update.message.chat_id
+        text = update.message.text
         logging.info('User {}: no credentials. Trying to apply code {}'.format(user_id, text))
-        if create_credentials(user_id, self.flows[user_id], update.message.text):
+        if create_credentials(user_id, self.flows[user_id], text):
             logging.info('User {}: Successfully authorized'.format(user_id))
             bot.send_message(chat_id=chat_id, text="Successfully authorized")
             self.flows.pop(user_id, None)
