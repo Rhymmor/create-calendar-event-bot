@@ -1,32 +1,28 @@
 <html>
     <head>
-        <script>
-            window.onload = init;
-            function getQueryVariable(variable) {
-                const query = window.location.search.substring(1);
-                const vars = query.split('&');
-                for (const x of vars) {
-                    const pair = x.split('=');
-                    if (decodeURIComponent(pair[0]) == variable) {
-                        return decodeURIComponent(pair[1]);
-                    }
-                }
-                console.error(`Query variable ${variable} not found`);
-            }
-            function init() {
-                const code = getQueryVariable('code');
-                const elem = document.getElementById('code');
-                if (code) {
-                    elem.textContent = `Your code is ${code}`;
-                } else {
-                    elem.textContent = 'There is no code for you';
-                }
-            }
-        </script>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,900" rel="stylesheet">
+        <script src="script.js"></script>
+        <link rel="stylesheet" href="style.css"/>
     </head>
     <body>
-        <div>
-            <span id='code'></span>
+        <div class='card-wrapper'>
+            <div class='card'>
+                <div class='image-block'>
+                    <div class="image-wrapper">
+                        <img class="image" src='image.png'>                
+                    </div>
+                </div>
+                <div class='code-label-block'>Authentication code</div>
+                <div class='code-text-block'>
+                    <span class="code-text" id='code'></span>
+                </div>
+                <span class="copy-help">
+                    (click to copy code)
+                </span>
+            </div>
+            <span class="created-by-text">
+                Created by <a href='https://telegram.me/create_calendar_event_bot'>@create_calendar_event_bot</a>
+            </span>
         </div>
     </body>
 </html>
